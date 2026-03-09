@@ -88,6 +88,7 @@ TOBE Architecture — горизонт 3 года
 - **BI** — подключена **только к Analytical Lakehouse**: дашборды, агрегаты.
 
 ![C2 Analytical](TOBE-future-C2 Analytical.drawio.png)
+
 ![C2 Medical](TOBE-future-C2 Medical.drawio.png)
 
 ### Как изменятся ключевые системы при масштабировании
