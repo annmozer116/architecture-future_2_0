@@ -31,7 +31,7 @@ TOBE Architecture — горизонт 3 года
 
 - **Единый контроль доступа**: **Apache Ranger** общий для всех lakehouse; IAM для аутентификации.
 
-![С1](Task3Advanced/TOBE-future-C1.drawio.png)
+![С1](TOBE-future-C1.drawio.png)
 
 ## Контейнеры (C4 Level 2)
 
@@ -87,8 +87,8 @@ TOBE Architecture — горизонт 3 года
 - **DataHub** — каталог по **обоим** lakehouse: структуры мед. данных видны для поиска и понимания, но получение данных Medical — только при отдельном доступе.
 - **BI** — подключена **только к Analytical Lakehouse**: дашборды, агрегаты.
 
-![C2 Analytical](Task3Advanced/TOBE-future-C2 Analytical.drawio.png)
-![C2 Medical](Task3Advanced/TOBE-future-C2 Medical.drawio.png)
+![C2 Analytical](TOBE-future-C2 Analytical.drawio.png)
+![C2 Medical](TOBE-future-C2 Medical.drawio.png)
 
 ### Как изменятся ключевые системы при масштабировании
 
