@@ -2,13 +2,16 @@ terraform {
   required_providers {
     yandex = {
       source  = "yandex-cloud/yandex"
-      version = "~> 0.100"
+      version = "> 0.100"
     }
   }
 }
 
 provider "yandex" {
-  zone = var.zone
+  token     = var.token      # OAuth или IAM токен (для пользователя)
+  cloud_id  = var.cloud_id    # ID облака
+  folder_id = var.folder_id   # ID каталога
+  zone      = var.zone        # Зона доступности (опционально)
 }
 
 module "vm" {

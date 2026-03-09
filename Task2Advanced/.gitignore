@@ -1,0 +1,14 @@
+# Backend config с секретами не коммитить, коммитим потому что там нет секретов
+# **/backend.hcl
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.*
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

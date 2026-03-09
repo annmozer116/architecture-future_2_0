@@ -1,4 +1,5 @@
 # Окружение: development (минимальные ресурсы)
+
 # Обязательные для провайдера Yandex Cloud
 cloud_id  = "b1gxxxxxxxxxxxxxxxxxx"  # ID облака
 folder_id = "b1gxxxxxxxxxxxxxxxxxx"  # ID каталога

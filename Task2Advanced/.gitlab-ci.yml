@@ -1,0 +1,66 @@
+stages:
+  - validate
+  - plan
+  - apply
+
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - "/usr/bin/env"
+    - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}/Task2Advanced/envs/dev
+  TF_VARS_FILE: "dev.tfvars"
+
+  # Для Yandex Object Storage (backend)
+  AWS_ACCESS_KEY_ID: ${ACCESS_KEY} # Static Access Key
+  AWS_SECRET_ACCESS_KEY: ${SECRET_KEY} # Static Secret Key
+
+  # Для Yandex Cloud провайдера (аутентификация)
+  YC_TOKEN: ${YC_TOKEN} # OAuth или IAM токен
+  # Альтернатива - через сервисный аккаунт:
+  # YC_SERVICE_ACCOUNT_KEY_FILE: ${YC_SERVICE_ACCOUNT_KEY_FILE}
+
+cache:
+  key: "terraform-${CI_COMMIT_REF_SLUG}"
+  paths:
+    - ${TF_ROOT}/.terraform
+
+before_script:
+  - cd ${TF_ROOT}
+  - terraform --version
+  - echo "Checking required variables..."
+  - test -n "$AWS_ACCESS_KEY_ID" || (echo "ACCESS_KEY is not set" && exit 1)
+  - test -n "$AWS_SECRET_ACCESS_KEY" || (echo "SECRET_KEY is not set" && exit 1)
+  - test -n "$YC_TOKEN" || (echo "YC_TOKEN is not set" && exit 1)
+
+  # Инициализация backend (S3)
+  - terraform init -reconfigure -input=false
+  # Не нужно передавать access_key/secret_key в командной строке,
+  # они берутся из переменных окружения AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY
+
+validate:
+  stage: validate
+  script:
+    - terraform validate
+    - terraform fmt -check -diff
+
+plan:
+  stage: plan
+  script:
+    - terraform plan -no-color -out=tfplan -input=false -var-file=${TF_VARS_FILE}
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan
+    expire_in: 1 week
+
+apply:
+  stage: apply
+  script:
+    - terraform apply -input=false -auto-approve tfplan
+  dependencies:
+    - plan
+  when: manual
+  only:
+    - main

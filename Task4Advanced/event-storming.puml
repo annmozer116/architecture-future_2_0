@@ -1,0 +1,102 @@
+@startuml event-storming
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontSize 10
+title Event Storming — «Будущее 2.0» (события и подписчики)
+
+legend right
+  |= Цвет |= Тип |= Описание |
+  | <#FFE0B2> | Domain Event | Событие, произошедшее в прошлом |
+  | <#BBDEFB> | Command | Действие, инициирующее изменение |
+  | <#FFF9C4> | Aggregate | Агрегат-источник события |
+  | <#C8E6C9> | Subscriber | Подписчик (Read Model / Policy) |
+  | <#E1BEE7> | External System | Внешняя система |
+endlegend
+
+' === Fintech Domain Events ===
+
+rectangle "Fintech" #E8F5E9 {
+  card "**Создан кредитный договор**\nCreditContractCreated" as E_CreditCreated #FFE0B2
+  card "**Открыт счёт**\nAccountOpened" as E_AccountOpened #FFE0B2
+  card "**Выполнен платёж**\nPaymentCompleted" as E_PaymentCompleted #FFE0B2
+  card "**Кредит погашен**\nCreditRepaid" as E_CreditRepaid #FFE0B2
+  
+  rectangle "CreditContract" as A_Credit #FFF9C4
+  rectangle "Account" as A_Account #FFF9C4
+}
+
+E_CreditCreated -[hidden]right-> A_Credit
+E_AccountOpened -[hidden]right-> A_Account
+
+' === Medical Domain Events ===
+
+rectangle "Medical" #E3F2FD {
+  card "**Зарегистрирован новый пациент**\nPatientRegistered" as E_PatientRegistered #FFE0B2
+  card "**Создан приём**\nAppointmentCreated" as E_AppointmentCreated #FFE0B2
+  card "**Проведена процедура**\nProcedureCompleted" as E_ProcedureCompleted #FFE0B2
+  card "**Выписано назначение**\nPrescriptionIssued" as E_PrescriptionIssued #FFE0B2
+  card "**Изменён остаток инвентаря**\nInventoryUpdated" as E_InventoryUpdated #FFE0B2
+  
+  rectangle "Patient" as A_Patient #FFF9C4
+  rectangle "Appointment" as A_Appointment #FFF9C4
+  rectangle "Procedure" as A_Procedure #FFF9C4
+}
+
+E_PatientRegistered -[hidden]right-> A_Patient
+E_ProcedureCompleted -[hidden]right-> A_Procedure
+
+' === AI Domain Events ===
+
+rectangle "AI / Clinical Decision" #FFF3E0 {
+  card "**Пройдено исследование ИИ**\nAIResearchCompleted" as E_AIResearchCompleted #FFE0B2
+  card "**Получен результат диагностики ИИ**\nAIDiagnosticResultReceived" as E_AIDiagnostic #FFE0B2
+  card "**Запущена модель ИИ**\nAIModelInvoked" as E_AIModelInvoked #FFE0B2
+  
+  rectangle "AIRequest/Result" as A_AI #FFF9C4
+}
+
+E_AIResearchCompleted -[hidden]right-> A_AI
+
+' === Analytics (Subscribers) ===
+
+rectangle "Analytics (подписчики)" #F3E5F5 {
+  card "Reporting & BI" as S_Reporting #C8E6C9
+  card "Analytical Lakehouse" as S_Lakehouse #C8E6C9
+}
+
+' === Связи: источник -> подписчик ===
+
+E_CreditCreated -down-> S_Reporting : подписчик
+E_AccountOpened -down-> S_Reporting : подписчик
+E_PaymentCompleted -down-> S_Reporting : подписчик
+E_CreditRepaid -down-> S_Reporting : подписчик
+
+E_PatientRegistered -down-> S_Reporting : подписчик\n(агрегаты)
+E_AppointmentCreated -down-> S_Reporting : подписчик
+E_ProcedureCompleted -down-> S_Reporting : подписчик
+E_InventoryUpdated -down-> S_Reporting : подписчик
+
+E_AIResearchCompleted -down-> S_Reporting : подписчик
+E_AIDiagnostic -down-> S_Reporting : подписчик
+E_AIModelInvoked -down-> S_Reporting : подписчик
+
+E_CreditCreated -down-> S_Lakehouse
+E_AccountOpened -down-> S_Lakehouse
+E_PatientRegistered -down-> S_Lakehouse
+E_ProcedureCompleted -down-> S_Lakehouse
+E_AIResearchCompleted -down-> S_Lakehouse
+
+' === AI подписывается на Medical ===
+
+E_ProcedureCompleted -right-> A_AI : подписчик\n(запрос анализа)
+E_AppointmentCreated -right-> A_AI : подписчик
+
+note bottom of S_Reporting
+  **Analytics** подписывается на события
+  из Fintech, Medical, AI.
+  В витрину НЕ включаются:
+  мед. карты, истории болезней,
+  результаты исследований (PHI).
+end note
+
+@enduml

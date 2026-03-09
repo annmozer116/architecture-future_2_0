@@ -1,4 +1,9 @@
 # Окружение: production (максимальные ресурсы)
+# Обязательные для провайдера Yandex Cloud
+cloud_id  = "b1gxxxxxxxxxxxxxxxxxx"  # ID облака
+folder_id = "b1gxxxxxxxxxxxxxxxxxx"  # ID каталога
+# token     = "ваш_OAuth_или_IAM_токен"  # НЕ ХРАНИТЬ В ФАЙЛЕ! Использовать CI/CD переменные
+
 
 vm_name   = "prod-vm"
 cores     = 8
