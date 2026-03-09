@@ -1,0 +1,69 @@
+@startuml bounded-contexts
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontSize 11
+title Bounded Contexts — «Будущее 2.0» (DDD)
+
+' === Домены и bounded contexts ===
+
+package "Fintech Domain" #E8F5E9 {
+  rectangle "Account Management\n(Управление счетами)" as BC_Account
+  rectangle "Credit Management\n(Управление кредитами)" as BC_Credit
+  rectangle "Payment Processing\n(Обработка платежей)" as BC_Payment
+}
+
+package "Medical Domain" #E3F2FD {
+  rectangle "Patient Registry\n(Реестр пациентов)" as BC_Patient
+  rectangle "Clinical Operations\n(Клинические операции)" as BC_Clinical
+  rectangle "Inventory Management\n(Управление инвентарём)" as BC_Inventory
+  rectangle "Personnel Management\n(Управление персоналом)" as BC_Personnel
+}
+
+package "AI / Clinical Decision Domain" #FFF3E0 {
+  rectangle "Clinical AI\n(Клинический ИИ)" as BC_AI
+  rectangle "Research & Diagnostics\n(Исследования и диагностика)" as BC_Research
+}
+
+package "Analytics Domain" #F3E5F5 {
+  rectangle "Reporting & BI\n(Отчётность и BI)" as BC_Reporting
+}
+
+package "Partner Integration Domain" #ECEFF1 {
+  rectangle "External Data Ingestion\n(Приём внешних данных)" as BC_External
+}
+
+' === Связи (Customer-Supplier / Conformist / ACL) ===
+
+BC_Account -down-> BC_Reporting : publishes events
+BC_Credit -down-> BC_Reporting : publishes events
+BC_Payment -down-> BC_Reporting : publishes events
+
+BC_Patient -down-> BC_Reporting : publishes (aggregated)
+BC_Patient -right-> BC_Clinical : uses
+BC_Clinical -down-> BC_Reporting : publishes (aggregated)
+BC_Clinical -right-> BC_AI : requests analysis
+BC_Inventory -down-> BC_Reporting : publishes events
+BC_Personnel -down-> BC_Reporting : publishes events
+
+BC_AI -down-> BC_Reporting : publishes metrics
+BC_AI -left-> BC_Clinical : returns results
+BC_Research -down-> BC_Reporting : publishes metrics
+BC_Research -left-> BC_Clinical : uses
+
+BC_External -down-> BC_Patient : feeds
+BC_External -down-> BC_Clinical : feeds
+BC_External -down-> BC_Inventory : feeds
+
+note right of BC_Reporting
+  **Analytics Domain** — подписчик событий
+  из всех доменов. Не публикует
+  доменные события (read model).
+end note
+
+note bottom of BC_AI
+  **AI Domain** — подписчик на события
+  из Medical (запросы на анализ),
+  публикует результаты и метрики.
+end note
+
+@enduml
