@@ -87,9 +87,11 @@ TOBE Architecture — горизонт 3 года
 - **DataHub** — каталог по **обоим** lakehouse: структуры мед. данных видны для поиска и понимания, но получение данных Medical — только при отдельном доступе.
 - **BI** — подключена **только к Analytical Lakehouse**: дашборды, агрегаты.
 
-![C2 Analytical](TOBE-future-C2 Analytical.drawio.png)
 
-![C2 Medical](TOBE-future-C2 Medical.drawio.png)
+![C2 Analytical](Analytical.drawio.png)
+
+
+![C2 Medical](Medical.drawio.png)
 
 ### Как изменятся ключевые системы при масштабировании
 

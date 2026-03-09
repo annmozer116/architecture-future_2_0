@@ -31,7 +31,8 @@
 - Инфраструктура: физические серверы в ЦОД (устаревшее оборудование)
 
 **TCO за 3 года, млн руб.**
-![TCO AS IS](Task5Advanced/TCO-asis.png)
+
+![TCO AS IS](TCO-asis.png)
 ---
 ## 2. Целевая архитектура (To-Be)
 
@@ -42,11 +43,11 @@
 - Self-service: Dremio + DataHub
 - Инфраструктура: Kubernetes в облаке (AWS/Azure/GCP) с резервированием
 
-![TCO-tobe](Task5Advanced/TCO-tobe.png)
+![TCO-tobe](TCO-tobe.png)
 
 --
 
-![Diff](Task5Advanced/TCO-diff.png)
+![Diff](TCO-diff.png)
 
 С учётом нормализации (без учёта инфляции): экономия 23% за 3 года
 
